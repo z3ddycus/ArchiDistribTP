@@ -70,10 +70,14 @@ public class MyServiceTP implements Provider<Source> {
     }
 
 	private Source put(Source source, MessageContext mc) throws JAXBException {
-		// TODO à compléter 
 		// * ajouter une ville passée en paramètre au citymanager
-		
-		return new JAXBSource(jc, "todo");
+
+		Unmarshaller u = jc.createUnmarshaller();
+		City city = (City)u.unmarshal(source);
+		if (!cityManager.getCities().contains(city)) {
+			cityManager.addCity(city);
+		}
+		return new JAXBSource(jc, city);
 	}
 
 	private Source delete(Source source, MessageContext mc) {

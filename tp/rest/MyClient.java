@@ -35,15 +35,12 @@ public class MyClient {
 		}
 	}
 
+	public void addCity(City city) throws JAXBException {
+		launchRequestHTTP("PUT", new JAXBSource(jc, city));
+	}
+
 	public void searchForCity(Position position) throws JAXBException {
-		service = Service.create(qname);
-		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
-		Dispatch<Source> dispatcher = service.createDispatch(qname,
-				Source.class, Service.Mode.MESSAGE);
-		Map<String, Object> requestContext = dispatcher.getRequestContext();
-		requestContext.put(MessageContext.HTTP_REQUEST_METHOD, "POST");
-		Source result = dispatcher.invoke(new JAXBSource(jc, position));
-		printSource(result);
+		launchRequestHTTP("POST", new JAXBSource(jc, position));
 	}
 
 	public void printSource(Source s) {
@@ -60,7 +57,20 @@ public class MyClient {
 
 	public static void main(String args[]) throws Exception {
 		MyClient client = new MyClient();
-		client.searchForCity(new Position(0,0));
-		client.searchForCity(new Position(12,42));
+		client.addCity(new City("Rabat", 34.01, -6.83, "Maroc"));
+		client.searchForCity(new Position(34.01, -6.83));
+	}
+
+	// TOOLS
+
+	private void launchRequestHTTP(String method, JAXBSource argument) {
+		service = Service.create(qname);
+		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
+		Dispatch<Source> dispatcher = service.createDispatch(qname,
+				Source.class, Service.Mode.MESSAGE);
+		Map<String, Object> requestContext = dispatcher.getRequestContext();
+		requestContext.put(MessageContext.HTTP_REQUEST_METHOD, method);
+		Source result = dispatcher.invoke(argument);
+		printSource(result);
 	}
 }
