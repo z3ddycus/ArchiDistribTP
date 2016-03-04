@@ -23,7 +23,7 @@ public class CityManager {
 	private List<City> cities;
 	
 	public CityManager() {
-		this.cities = new LinkedList<City>();
+		this.cities = new LinkedList<>();
 	}
 
 	public List<City> getCities() {
@@ -43,10 +43,13 @@ public class CityManager {
 	}
 	
 	public List<City> searchFor(String cityName){
-		
-		// TODO: à compléter
-		
-		return null;
+		List<City> result = new LinkedList<>();
+		for (City city : cities) {
+			if (city.getName().equals(cityName)) {
+				result.add(city);
+			}
+		}
+		return result;
 	}
 	
 	public City searchExactPosition(Position position) throws CityNotFound{
@@ -58,7 +61,19 @@ public class CityManager {
 		throw new CityNotFound();
 	}
 	
-	/**
-	 * TODO: searchNear : une fonction qui retourne la liste des villes à dix klomètres d'une position
-	 */
+	public City searchNearCity(Position position) throws CityNotFound {
+		City result = null;
+		double distance = 10;
+		for (City city : cities){
+			double distanceToCity = position.distance(city.getPosition());
+			if (distanceToCity < distance) {
+				result = city;
+				distance = distanceToCity;
+			}
+		}
+		if (result == null) {
+			throw new CityNotFound();
+		}
+		return result;
+	}
 }

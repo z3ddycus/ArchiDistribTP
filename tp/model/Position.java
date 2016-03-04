@@ -42,5 +42,11 @@ public class Position {
 		buffer.append("(").append(latitude).append(", ").append(longitude).append(")");
 		return buffer.toString();
 	}
+
+	public double distance(Position p) {
+		double x = p.getLatitude() - getLatitude();
+		double y = p.getLongitude() - getLongitude();
+		return Math.sqrt(x * x + y * y);
+	}
 	
 }
