@@ -19,6 +19,8 @@ import tp.model.CityManager;
 import tp.model.CityNotFound;
 import tp.model.Position;
 
+import java.util.List;
+
 @WebServiceProvider
                    
 @ServiceMode(value=Service.Mode.MESSAGE)
@@ -106,7 +108,8 @@ public class MyServiceTP implements Provider<Source> {
 		// TODO à compléter 
 		// * retourner seulement la ville dont le nom est contenu dans l'url d'appel
 		// * retourner tous les villes seulement si le chemin d'accès est "all"
-		
+		List<City> cities=cityManager.getCities();
+        for (City c : cities) c.toString();
 		return new JAXBSource(jc, cityManager);
 	}
 

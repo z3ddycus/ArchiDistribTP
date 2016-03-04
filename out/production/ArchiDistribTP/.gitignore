@@ -1,0 +1,12 @@
+.idea/
+.idea/workspace.xml
+umlreverse.ipr
+umlreverse.iws
+umlreverse.iml
+target
+nbactions.xml
+nb-configuration.xml
+*.iml
+bin
+.project
+.classpath
