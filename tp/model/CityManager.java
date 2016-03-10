@@ -51,7 +51,9 @@ public class CityManager {
 		}
 		return result;
 	}
-	
+	public void clearCities() {
+		cities.clear();
+	}
 	public City searchExactPosition(Position position) throws CityNotFound{
 		for(City city:cities){
 			if (position.equals(city.getPosition())){

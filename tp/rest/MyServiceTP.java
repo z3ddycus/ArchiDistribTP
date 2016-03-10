@@ -19,7 +19,9 @@ import tp.model.CityManager;
 import tp.model.CityNotFound;
 import tp.model.Position;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServiceProvider
                    
@@ -30,7 +32,6 @@ public class MyServiceTP implements Provider<Source> {
 	 * Gère les villes
 	 */
 	private CityManager cityManager = new CityManager();
-	
 	private JAXBContext jc;
 	
 	@javax.annotation.Resource(type=Object.class)
@@ -38,14 +39,12 @@ public class MyServiceTP implements Provider<Source> {
 	
 	public MyServiceTP(){
 		try {
-            jc = JAXBContext.newInstance(CityManager.class,City.class,Position.class);
+            jc = JAXBContext.newInstance(CityManager.class,City.class,Position.class, CityNotFound.class);
             
         } catch(JAXBException je) {
             System.out.println("Exception " + je);
             throw new WebServiceException("Cannot create JAXBContext", je);
         }
-        cityManager.addCity(new City("Rouen",49.437994,1.132965,"FR"));
-        cityManager.addCity(new City("Neuor",12,42,"RF"));
 	}
 	 
     public Source invoke(Source source) {
@@ -80,41 +79,80 @@ public class MyServiceTP implements Provider<Source> {
 		return new JAXBSource(jc, city);
 	}
 
-	private Source delete(Source source, MessageContext mc) {
-		
-		// TODO à compléter 
-		// * effacer toute la liste de ville
-		// * effacer la ville passée en paramètre
-		
-		return null;
+	private Source delete(Source source, MessageContext mc) throws JAXBException {
+		String path = (String) mc.get(MessageContext.PATH_INFO);
+		if (path == null) path = "";
+
+		Map<String,String> params = extractParameters((String) mc.get(MessageContext.QUERY_STRING));
+		CityManager result = new CityManager();
+		if (path.equals("all")) {
+			cityManager.getCities().forEach(result::addCity);
+		} else if (params.containsKey("ville")) {
+			List<City> citiesToDelete = cityManager.searchFor(params.get("ville"));
+			citiesToDelete.forEach(result::addCity);
+		} else if (params.containsKey("position")) {
+			String[] split = params.get("position").split(";");
+			if (split.length >= 2) {
+				Position p = new Position(Double.valueOf(split[0]),Double.valueOf(split[1]));
+				cityManager.getCities().stream().filter(city -> city.getPosition().equals(p)).forEach(result::addCity);
+			}
+
+		}
+		for (City city : result.getCities()) {
+			cityManager.removeCity(city);
+		}
+		return new JAXBSource(jc, result);
 	}
 
 	private Source post(Source source, MessageContext mc) throws JAXBException {
-		// * rechercher une ville à partir de sa position
 		Unmarshaller u = jc.createUnmarshaller();
 		Position position=(Position)u.unmarshal(source);
+		String path = (String) mc.get(MessageContext.PATH_INFO);
+		if (path == null) path = "";
 		Object message;
 		try {
-			message = cityManager.searchExactPosition(position);
+			if (path.contains("near")) {
+				// * rechercher les villes proches de cette position si l'url de post contient le mot clé "near"
+				message = cityManager.searchNearCity(position);
+			} else {
+				// * rechercher une ville à partir de sa position
+				message = cityManager.searchExactPosition(position);
+			}
 		} catch (CityNotFound cnf) {
-			// TODO: retourner correctement l'exception
-			message = cnf;
+			message = new CityManager();
 		}
-		
 		return new JAXBSource(jc, message);
-		
-		// TODO à compléter 
-		// * rechercher les villes proches de cette position si l'url de post contient le mot clé "near"
-
 	}
 
 	private Source get(MessageContext mc) throws JAXBException {
-		// TODO à compléter 
-		// * retourner seulement la ville dont le nom est contenu dans l'url d'appel
-		// * retourner tous les villes seulement si le chemin d'accès est "all"
-		List<City> cities=cityManager.getCities();
-        for (City c : cities) c.toString();
-		return new JAXBSource(jc, cityManager);
+		String path = (String) mc.get(MessageContext.PATH_INFO);
+		if (path == null) path = "";
+
+		if (path.equals("all")) {
+			// * retourner tous les villes seulement si le chemin d'accès est "all"
+			return new JAXBSource(jc, cityManager);
+		} else {
+			// * retourner seulement la ville dont le nom est contenu dans l'url d'appel
+			String params = (String) mc.get(MessageContext.QUERY_STRING);
+			Map<String, String> parameters = extractParameters(params);
+			CityManager result = new CityManager();
+			if (parameters.containsKey("ville")) {
+				String name = parameters.get("ville");
+				cityManager.searchFor(name).forEach(result::addCity);
+			}
+			return new JAXBSource(jc, result);
+		}
+	}
+
+	private Map<String, String> extractParameters (String params) {
+		Map<String, String> parameters = new HashMap<>();
+		if (params != null) {
+			for (String couple : params.split("[&]")) {
+				String[] split = couple.split("[=]");
+				parameters.put(split[0], split[1]);
+			}
+		}
+		return parameters;
 	}
 
 	public static void main(String args[]) {

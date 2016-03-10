@@ -1,5 +1,7 @@
 .idea/
 .idea/workspace.xml
+*.class
+*/*.class
 umlreverse.ipr
 umlreverse.iws
 umlreverse.iml
@@ -10,3 +12,4 @@ nb-configuration.xml
 bin
 .project
 .classpath
+.out/

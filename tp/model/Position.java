@@ -44,16 +44,18 @@ public class Position {
 	}
 
 	public double distance(Position p) {
-		double longA = p.getLongitude();
-		double longB = getLongitude();
-		double latA = p.getLatitude();
-		double latB = getLatitude();
-
-		double S = Math.acos(
-				Math.sin(latA) * Math.sin(latB)
-				+ Math.cos(latA) * Math.cos(latB) * Math.cos(longA - longB)
+		double lon1 = p.getLongitude();
+		double lon2 = getLongitude();
+		double lat1 = p.getLatitude();
+		double lat2 = getLatitude();
+		double theta = lon1 - lon2;
+		double dist = Math.acos(
+				Math.sin(lat1 * Math.PI / 180.) * Math.sin(lat2 * Math.PI / 180.)
+				+ Math.cos(lat1 * Math.PI / 180.) * Math.cos(lat2 * Math.PI / 180.)
+				* Math.cos(theta * Math.PI / 180.)
 		);
-		return S * 6378;
+		dist = dist * 4804.617576276;
+		return dist;
 	}
 	
 }
