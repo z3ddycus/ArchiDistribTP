@@ -59,5 +59,25 @@ public class City {
 		buffer.append(name).append(" in ").append(country).append(" at ").append(location);
 		return buffer.toString();
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof City)) return false;
+
+		City city = (City) o;
+
+		if (getName() != null ? !getName().equals(city.getName()) : city.getName() != null) return false;
+		if (location != null ? !location.equals(city.location) : city.location != null) return false;
+		return getCountry() != null ? getCountry().equals(city.getCountry()) : city.getCountry() == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = getName() != null ? getName().hashCode() : 0;
+		result = 31 * result + (location != null ? location.hashCode() : 0);
+		result = 31 * result + (getCountry() != null ? getCountry().hashCode() : 0);
+		return result;
+	}
 }

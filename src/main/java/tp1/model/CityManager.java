@@ -1,8 +1,9 @@
-package tp2.model;
+package tp1.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This class represent a city manager, it can  
@@ -52,7 +53,7 @@ public class CityManager {
 	public void clearCities() {
 		cities.clear();
 	}
-	public City searchExactPosition(Position position) throws CityNotFound {
+	public City searchExactPosition(Position position) throws CityNotFound{
 		for(City city:cities){
 			if (position.equals(city.getPosition())){
 				return city;
@@ -60,7 +61,7 @@ public class CityManager {
 		}
 		throw new CityNotFound();
 	}
-
+	
 	public City searchNearCity(Position position) throws CityNotFound {
 		City result = null;
 		double distance = 10;

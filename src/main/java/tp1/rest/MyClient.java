@@ -1,6 +1,5 @@
-package tp.rest;
+package tp1.rest;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -16,9 +15,9 @@ import javax.xml.ws.Service;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.http.HTTPBinding;
 
-import tp.model.City;
-import tp.model.CityManager;
-import tp.model.Position;
+import tp1.model.City;
+import tp1.model.CityManager;
+import tp1.model.Position;
 
 public class MyClient {
 	private Service service;

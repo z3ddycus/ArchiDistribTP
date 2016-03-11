@@ -1,18 +1,24 @@
-package tp2.rest;
-
-import tp2.model.CityManager;
-import tp2.model.CityNotFound;
-import tp2.model.City;
-import tp2.model.Position;
-
+package tp1.rest;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Source;
-import javax.xml.ws.*;
+import javax.xml.ws.Endpoint;
+import javax.xml.ws.Provider;
+import javax.xml.ws.Service;
+import javax.xml.ws.ServiceMode;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.WebServiceProvider;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.http.HTTPBinding;
+
+import tp1.model.City;
+import tp1.model.CityManager;
+import tp1.model.CityNotFound;
+import tp1.model.Position;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
