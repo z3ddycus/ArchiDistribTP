@@ -20,12 +20,26 @@ import tp1.model.CityManager;
 import tp1.model.Position;
 
 public class MyClient {
+	/**
+	 * Le service
+	 */
 	private Service service;
+	/**
+	 * Le JAXBContext
+	 */
 	private JAXBContext jc;
-
+	/**
+	 * Le QName
+	 */
 	private static final QName qname = new QName("", "");
+	/**
+	 * L'url du service
+	 */
 	private static final String url = "http://127.0.0.1:8084";
 
+	/**
+	 * Un nouveau client
+	 */
 	public MyClient() {
 		try {
 			jc = JAXBContext.newInstance(CityManager.class, City.class,
@@ -35,6 +49,13 @@ public class MyClient {
 		}
 	}
 
+	/**
+	 * Une requetes de mode "mode" d'url "url"
+	 * @param url
+	 * 		L'url
+	 * @param mode
+	 * 		Le type de requetes
+     */
 	public void handleUrl(String url, String mode) throws JAXBException {
 		service = Service.create(qname);
 		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
@@ -46,6 +67,11 @@ public class MyClient {
 		printSource(result);
 	}
 
+	/**
+	 * Envoie une requete pour ajouter city
+	 * @param city
+	 * 		La ville a rajoutée
+     */
 	public void addCity(City city) throws JAXBException {
 		service = Service.create(qname);
 		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
@@ -57,6 +83,13 @@ public class MyClient {
 		printSource(result);
 	}
 
+	/**
+	 * Envoie une requete pour rechercher une ville
+	 * @param url
+	 * 		l'url
+	 * @param position
+	 * 		la position de la ville
+     */
 	public void searchForCity(String url, Position position) throws JAXBException {
 		service = Service.create(qname);
 		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
@@ -68,6 +101,11 @@ public class MyClient {
 		printSource(result);
 	}
 
+	/**
+	 * Affichage de la source
+	 * @param s
+	 * 		La source à afficher
+     */
 	public void printSource(Source s) {
 		try {
 			System.out.println("============================= Response Received =========================================");
@@ -80,6 +118,9 @@ public class MyClient {
 		}
 	}
 
+	/**
+	 * Point d'entrée
+     */
 	public static void main(String args[]) throws Exception {
 		MyClient client = new MyClient();
 

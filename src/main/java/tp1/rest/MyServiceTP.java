@@ -32,6 +32,9 @@ public class MyServiceTP implements Provider<Source> {
 	 * Gère les villes
 	 */
 	private CityManager cityManager = new CityManager();
+	/**
+	 * Le JAXBContext
+	 */
 	private JAXBContext jc;
 	
 	@javax.annotation.Resource(type=Object.class)
@@ -46,7 +49,13 @@ public class MyServiceTP implements Provider<Source> {
             throw new WebServiceException("Cannot create JAXBContext", je);
         }
 	}
-	 
+
+	/**
+	 * Methode permettant d'appeler les methodes du service depuis le client.
+	 * @param source
+	 * La Source du message.
+	 * @return Le resultat d'une des methodes get, put, post, et delete.
+	 */
     public Source invoke(Source source) {
     	
         try{
@@ -68,6 +77,15 @@ public class MyServiceTP implements Provider<Source> {
         }
     }
 
+	/**
+	 * Permet d'ajouter une ville.
+	 * @param source
+	 * La Source du message.
+	 * @param mc
+	 * Le MessageContext du message.
+	 * @return
+	 * un JAXBSource contenant la ville ajoutee.
+	 */
 	private Source put(Source source, MessageContext mc) throws JAXBException {
 		// * ajouter une ville passée en paramètre au citymanager
 
@@ -79,6 +97,15 @@ public class MyServiceTP implements Provider<Source> {
 		return new JAXBSource(jc, city);
 	}
 
+	/**
+	 * Permet de supprimer une ville.
+	 * @param source
+	 * La Source du message.
+	 * @param mc
+	 * Le MessageContext du message.
+	 * @return
+	 * un JAXBSource contenant un CityManager qui contient les City supprimees.
+	 */
 	private Source delete(Source source, MessageContext mc) throws JAXBException {
 		String path = (String) mc.get(MessageContext.PATH_INFO);
 		if (path == null) path = "";
@@ -104,6 +131,15 @@ public class MyServiceTP implements Provider<Source> {
 		return new JAXBSource(jc, result);
 	}
 
+	/**
+	 * Permet de recuperer une ville a partir des coordonnees passees en parametre, ou recupere une ville proche de ces coordonnees.
+	 * @param source
+	 * La Source du message.
+	 * @param mc
+	 * Le MessageContext du message.
+	 * @return
+	 * un JAXBSource contenant le message retourné.
+	 */
 	private Source post(Source source, MessageContext mc) throws JAXBException {
 		Unmarshaller u = jc.createUnmarshaller();
 		Position position=(Position)u.unmarshal(source);
@@ -124,6 +160,12 @@ public class MyServiceTP implements Provider<Source> {
 		return new JAXBSource(jc, message);
 	}
 
+	/**
+	 * Renvoie la liste de toutes les villes, ou de ville(s) en particulier dont le nom est passe en parametre.
+	 * @param mc
+	 * Le MessageContext du message.
+	 * @return un JAXBSource contenant un CityManager qui contient les villes retrouves.
+	 */
 	private Source get(MessageContext mc) throws JAXBException {
 		String path = (String) mc.get(MessageContext.PATH_INFO);
 		if (path == null) path = "";
@@ -144,6 +186,13 @@ public class MyServiceTP implements Provider<Source> {
 		}
 	}
 
+	/**
+	 * Permet d'extraire les parametres depuis une URL.
+	 * @param params
+	 * URL passee en parametre.
+	 * @return
+	 * les parametres extraits.
+	 */
 	private Map<String, String> extractParameters (String params) {
 		Map<String, String> parameters = new HashMap<>();
 		if (params != null) {
@@ -155,6 +204,9 @@ public class MyServiceTP implements Provider<Source> {
 		return parameters;
 	}
 
+	/**
+	 * Point d'entrée
+     */
 	public static void main(String args[]) {
 	      Endpoint e = Endpoint.create( HTTPBinding.HTTP_BINDING,
 	                                     new MyServiceTP());
