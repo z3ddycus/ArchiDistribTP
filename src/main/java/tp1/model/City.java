@@ -15,8 +15,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class City {
 
+	/**
+	 * Le nom
+	 */
 	private String name;
+	/**
+	 * La position
+	 */
 	private Position location;
+	/**
+	 * Le pays
+	 */
 	private String country;
 	
 	/**
@@ -31,29 +40,70 @@ public class City {
 		this.location = new Position(latitude,longitude);
 		this.country = country;
 	}
-	
+
 	public City() {
+
 	}
-	
+
+	/**
+	 * La position
+	 * @return
+	 * 		La position de this
+     */
 	public Position getPosition() {
 		return location;
 	}
+
+	/**
+	 * Remplace la position
+	 * @param position
+	 * 		La nouvelle position
+     */
 	public void setPosition(Position position) {
 		this.location = position;
 	}
+
+	/**
+	 * Le nom
+	 * @return
+	 * 		Le nom de this
+     */
 	public String getName() {
 		return name;
 	}
+
+	/**
+	 * Remplace le nom
+	 * @param name
+	 * 		le nouveau nom
+     */
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * Le pays
+	 * @return
+	 * 		le pays de this
+     */
 	public String getCountry() {
 		return country;
 	}
+
+	/**
+	 * Remplace le pays
+	 * @param country
+	 * 		Le nouveau pays
+     */
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	
+
+	/**
+	 * La fonction d'abstraction
+	 * @return
+	 * 		getName() + " in " + getCountry() + " at " + getLocation()
+     */
 	public String toString(){
 		final StringBuffer buffer = new StringBuffer();
 		buffer.append(name).append(" in ").append(country).append(" at ").append(location);

@@ -20,12 +20,26 @@ import tp1.model.CityManager;
 import tp1.model.Position;
 
 public class MyClient {
+	/**
+	 * Le service
+	 */
 	private Service service;
+	/**
+	 * Le JAXBContext
+	 */
 	private JAXBContext jc;
-
+	/**
+	 * Le QName
+	 */
 	private static final QName qname = new QName("", "");
+	/**
+	 * L'url du service
+	 */
 	private static final String url = "http://127.0.0.1:8084";
 
+	/**
+	 * Un nouveau client
+	 */
 	public MyClient() {
 		try {
 			jc = JAXBContext.newInstance(CityManager.class, City.class,
@@ -55,11 +69,10 @@ public class MyClient {
 	}
 
 	/**
-	 * Permet d'ajouter une ville.
+	 * Envoie une requete pour ajouter city
 	 * @param city
-	 * Une City
-	 * @throws JAXBException
-	 */
+	 * 		La ville a rajoutée
+     */
 	public void addCity(City city) throws JAXBException {
 		service = Service.create(qname);
 		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
@@ -107,6 +120,9 @@ public class MyClient {
 		}
 	}
 
+	/**
+	 * Point d'entrée
+     */
 	public static void main(String args[]) throws Exception {
 		MyClient client = new MyClient();
 

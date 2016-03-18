@@ -32,6 +32,9 @@ public class MyServiceTP implements Provider<Source> {
 	 * Gere les villes
 	 */
 	private CityManager cityManager = new CityManager();
+	/**
+	 * Le JAXBContext
+	 */
 	private JAXBContext jc;
 	
 	@javax.annotation.Resource(type=Object.class)
@@ -101,7 +104,6 @@ public class MyServiceTP implements Provider<Source> {
 	 * @param mc
 	 * Le MessageContext du message.
 	 * @return un JAXBSource contenant un CityManager qui contient les City supprimees.
-	 * @throws JAXBException
 	 */
 	private Source delete(Source source, MessageContext mc) throws JAXBException {
 		String path = (String) mc.get(MessageContext.PATH_INFO);
@@ -188,7 +190,8 @@ public class MyServiceTP implements Provider<Source> {
 	 * Permet d'extraire les parametres depuis une URL.
 	 * @param params
 	 * URL passee en parametre.
-	 * @return les parametres extraits.
+	 * @return
+	 * les parametres extraits.
 	 */
 	private Map<String, String> extractParameters (String params) {
 		Map<String, String> parameters = new HashMap<>();
@@ -201,6 +204,9 @@ public class MyServiceTP implements Provider<Source> {
 		return parameters;
 	}
 
+	/**
+	 * Point d'entrée
+     */
 	public static void main(String args[]) {
 	      Endpoint e = Endpoint.create( HTTPBinding.HTTP_BINDING,
 	                                     new MyServiceTP());
