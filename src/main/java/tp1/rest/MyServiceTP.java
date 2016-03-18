@@ -29,7 +29,7 @@ import java.util.Map;
 public class MyServiceTP implements Provider<Source> {
 	
 	/**
-	 * Gère les villes
+	 * Gere les villes
 	 */
 	private CityManager cityManager = new CityManager();
 	private JAXBContext jc;
@@ -46,7 +46,13 @@ public class MyServiceTP implements Provider<Source> {
             throw new WebServiceException("Cannot create JAXBContext", je);
         }
 	}
-	 
+
+	/**
+	 * Methode permettant d'appeler les methodes du service depuis le client.
+	 * @param source
+	 * La Source du message.
+	 * @return Le resultat d'une des methodes get, put, post, et delete.
+	 */
     public Source invoke(Source source) {
     	
         try{
@@ -68,8 +74,17 @@ public class MyServiceTP implements Provider<Source> {
         }
     }
 
+	/**
+	 * Permet d'ajouter une ville.
+	 * @param source
+	 * La Source du message.
+	 * @param mc
+	 * Le MessageContext du message.
+	 * @return un JAXBSource contenant la ville ajoutee.
+	 * @throws JAXBException
+	 */
 	private Source put(Source source, MessageContext mc) throws JAXBException {
-		// * ajouter une ville passée en paramètre au citymanager
+		// * ajouter une ville passee en parametre au citymanager
 
 		Unmarshaller u = jc.createUnmarshaller();
 		City city = (City)u.unmarshal(source);
@@ -79,6 +94,15 @@ public class MyServiceTP implements Provider<Source> {
 		return new JAXBSource(jc, city);
 	}
 
+	/**
+	 * Permet de supprimer une ville.
+	 * @param source
+	 * La Source du message.
+	 * @param mc
+	 * Le MessageContext du message.
+	 * @return un JAXBSource contenant un CityManager qui contient les City supprimees.
+	 * @throws JAXBException
+	 */
 	private Source delete(Source source, MessageContext mc) throws JAXBException {
 		String path = (String) mc.get(MessageContext.PATH_INFO);
 		if (path == null) path = "";
@@ -104,6 +128,15 @@ public class MyServiceTP implements Provider<Source> {
 		return new JAXBSource(jc, result);
 	}
 
+	/**
+	 * Permet de recuperer une ville a partir des coordonnees passees en parametre, ou recupere une ville proche de ces coordonnees.
+	 * @param source
+	 * La Source du message.
+	 * @param mc
+	 * Le MessageContext du message.
+	 * @return un JAXBSource contenant le message retourne.
+	 * @throws JAXBException
+	 */
 	private Source post(Source source, MessageContext mc) throws JAXBException {
 		Unmarshaller u = jc.createUnmarshaller();
 		Position position=(Position)u.unmarshal(source);
@@ -112,10 +145,10 @@ public class MyServiceTP implements Provider<Source> {
 		Object message;
 		try {
 			if (path.contains("near")) {
-				// * rechercher les villes proches de cette position si l'url de post contient le mot clé "near"
+				// * rechercher les villes proches de cette position si l'url de post contient le mot cle "near"
 				message = cityManager.searchNearCity(position);
 			} else {
-				// * rechercher une ville à partir de sa position
+				// * rechercher une ville a partir de sa position
 				message = cityManager.searchExactPosition(position);
 			}
 		} catch (CityNotFound cnf) {
@@ -124,12 +157,19 @@ public class MyServiceTP implements Provider<Source> {
 		return new JAXBSource(jc, message);
 	}
 
+	/**
+	 * Renvoie la liste de toutes les villes, ou de ville(s) en particulier dont le nom est passe en parametre.
+	 * @param mc
+	 * Le MessageContext du message.
+	 * @return un JAXBSource contenant un CityManager qui contient les villes retrouves.
+	 * @throws JAXBException
+	 */
 	private Source get(MessageContext mc) throws JAXBException {
 		String path = (String) mc.get(MessageContext.PATH_INFO);
 		if (path == null) path = "";
 
 		if (path.equals("all")) {
-			// * retourner tous les villes seulement si le chemin d'accès est "all"
+			// * retourner tous les villes seulement si le chemin d'acces est "all"
 			return new JAXBSource(jc, cityManager);
 		} else {
 			// * retourner seulement la ville dont le nom est contenu dans l'url d'appel
@@ -144,6 +184,12 @@ public class MyServiceTP implements Provider<Source> {
 		}
 	}
 
+	/**
+	 * Permet d'extraire les parametres depuis une URL.
+	 * @param params
+	 * URL passee en parametre.
+	 * @return les parametres extraits.
+	 */
 	private Map<String, String> extractParameters (String params) {
 		Map<String, String> parameters = new HashMap<>();
 		if (params != null) {

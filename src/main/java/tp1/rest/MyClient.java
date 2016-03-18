@@ -35,6 +35,14 @@ public class MyClient {
 		}
 	}
 
+	/**
+	 * Permet de traiter l'URL passee en parametre.
+	 * @param url
+	 * L'URL du service.
+	 * @param mode
+	 * le mode de traitement de l'URL.
+	 * @throws JAXBException
+	 */
 	public void handleUrl(String url, String mode) throws JAXBException {
 		service = Service.create(qname);
 		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
@@ -46,6 +54,12 @@ public class MyClient {
 		printSource(result);
 	}
 
+	/**
+	 * Permet d'ajouter une ville.
+	 * @param city
+	 * Une City
+	 * @throws JAXBException
+	 */
 	public void addCity(City city) throws JAXBException {
 		service = Service.create(qname);
 		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
@@ -57,6 +71,14 @@ public class MyClient {
 		printSource(result);
 	}
 
+    /**
+     * Permet de rechercher une ville a partir de sa position.
+     * @param url
+     * L'adresse URL du service.
+     * @param position
+     * La position de la ville a rechercher.
+     * @throws JAXBException
+     */
 	public void searchForCity(String url, Position position) throws JAXBException {
 		service = Service.create(qname);
 		service.addPort(qname, HTTPBinding.HTTP_BINDING, url);
@@ -68,6 +90,11 @@ public class MyClient {
 		printSource(result);
 	}
 
+    /**
+     * Permet d'afficher la ville a travers la source.
+     * @param s
+     * La Source en parametre.
+     */
 	public void printSource(Source s) {
 		try {
 			System.out.println("============================= Response Received =========================================");
