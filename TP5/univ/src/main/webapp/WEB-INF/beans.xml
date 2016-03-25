@@ -9,8 +9,8 @@
         <import resource="classpath:META-INF/cxf/cxf.xml" />
 
         <jaxws:endpoint 
-          id="helloWorld" 
-          implementor="fr.HelloWorldImpl" 
-          address="/HelloWorld" />
+          id="CityManager"
+          implementor="fr.model.CityManager"
+          address="/citymanager" />
           
 </beans>
