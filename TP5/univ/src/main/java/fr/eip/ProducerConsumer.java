@@ -6,6 +6,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.log4j.BasicConfigurator;
 
+import java.util.Scanner;
 
 public class ProducerConsumer {
 
@@ -23,7 +24,14 @@ public class ProducerConsumer {
             public void configure() throws Exception {
                 // On définit un consommateur 'consumer-1'
                 //qui va écrire le message
-                from("direct-consumer-1").to("log:affiche-1-log");
+                from("direct:consumer-1").to("log:affiche-1-log");
+                from("direct:consumer-2").to("file:messages");
+                from("direct:consumer-all")
+                        .choice()
+                            .when(header("destinataire").isEqualTo("écrire"))
+                                .to("direct:consumer-2")
+                            .otherwise()
+                                .to("direct:consumer-1");
             }
         };
 
@@ -36,7 +44,18 @@ public class ProducerConsumer {
         //On crée un producteur
         ProducerTemplate pt = context.createProducerTemplate();
         //qui envoie un message au consommateur 'consumer-1'
-        pt.sendBody("direct:consumer-1", "Hello world !");
 
+
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNext()) {
+            String read = sc.next();
+            if (read.equals("exit")) {
+                System.exit(1);
+            }
+            if (read.length() > 0 && read.charAt(0) == 'w') {
+                pt.sendBodyAndHeader("direct:consumer-all", read, "destinataire", "écrire");
+            }
+            pt.sendBody("direct:consumer-all", read);
+        }
     }
 }
